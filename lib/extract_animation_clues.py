@@ -1,8 +1,9 @@
 import json
 import os
-import xml.etree.ElementTree as ET
 
 import tinycss2
+# import xml.etree.ElementTree as ET
+from lxml import etree as ET
 
 
 def extract_from_block(block):
@@ -40,6 +41,9 @@ def extract_animation_clues(filepath):
           clips[i]['stroke'] = node.attrib['d']
           clips[i]['stroke-dasharray'] = node.attrib['stroke-dasharray']
         else:
+          parent = node.getparent()
+          if parent is not None and 'clipPath' in parent.tag:
+            continue
           strokes.append(node.attrib['d'])
 
     keyframes = {}
@@ -60,8 +64,8 @@ def extract_animation_clues(filepath):
               keyframe[component.value] = {}
               current = component.value
             elif component.type == 'percentage':
-              keyframe[component.value] = {}
-              current = component.value
+              keyframe[f"{component.value}%"] = {}
+              current = f"{component.value}%"
             elif component.type == '{} block':
               block = extract_from_block(component.content)
               keyframe[current] = block
@@ -77,6 +81,6 @@ def extract_animation_clues(filepath):
     return clues
 
 if __name__ == '__main__':
-  clues = extract_animation_clues(os.path.join(os.path.dirname(__file__), '../svgs/11904.svg'))
+  clues = extract_animation_clues(os.path.join(os.path.dirname(__file__), '../data/11904.svg'))
   with open(os.path.join(os.path.dirname(__file__), '../data/11904.json'), 'w') as file:
     file.write(json.dumps(clues))

@@ -7,7 +7,7 @@ def print_keyframe(name, values):
   for key in values:
     result.append(f"{key}:{values[key]}")
 
-  results = ';\n'.join(result)
+  results = ';\n'.join(result) + ';'
   return f"{name} {{\n{results}\n}}"
   
 
@@ -24,38 +24,44 @@ def print_keyframes(name, frames):
 def print_path(stroke, fill="lightgray"):
   return f"<path d=\"{stroke}\" fill=\"{fill}\"></path>"
 
-def print_clip_path(clip, stroke):
-
+def print_clip_path(clip):
+  return f"<path cli-path=\"url(\\#{clip['id']})\" d=\"{clip['stroke']}\" stroke-dasharray=\"{clip["stroke-dasharray"]}\" stroke-linecap=\"round\"/>"
 
 def make_svg(clues):
   keyframes = clues['keyframes']
   keyframes_list = []
 
-  
   for key in keyframes:
     keyframe = keyframes[key]
     keyframes_list.append(print_keyframes(key, keyframe))
 
   path_list = []
+  strokes = clues['strokes']
   for stroke in clues['strokes']:
     path_list.append(print_path(stroke))
+  
+  clip_list = []
+  for clip in clues['clips']:
+    clip_list.append(print_clip_path(clip))
 
   return f"""
-<svg version=\"1.1\" viewBox=\"0 0 1024 1024\" xmlns=\"http://www.w3.org/2000/svg\">
-  <g stroke=\"lightgray\" stroke-dasharray=\"1,1\" stroke-width=\"1\" transform=\"scale(4, 4)\">
-    <line x1=\"0\" y1=\"0\" x2=\"256\" y2=\"256\"></line>
-    <line x1=\"256\" y1=\"0\" x2=\"0\" y2=\"256\"></line>
-    <line x1=\"128\" y1=\"0\" x2=\"128\" y2=\"256\"></line>
-    <line x1=\"0\" y1=\"128\" x2=\"256\" y2=\"128\"></line>
-  </g>
-  <g transform=\"scale(1, -1) translate(0, -900)\">
-     <style type=\"text/css\">
-      {' '.join(keyframes_list)}
-     </style>
-      {''.join(path_list)} 
-  </g>
-</svg>
-"""
+    <svg version=\"1.1\" viewBox=\"0 0 1024 1024\" xmlns=\"http://www.w3.org/2000/svg\">
+      <g stroke=\"lightgray\" stroke-dasharray=\"1,1\" stroke-width=\"1\" transform=\"scale(4, 4)\">
+        <line x1=\"0\" y1=\"0\" x2=\"256\" y2=\"256\"></line>
+        <line x1=\"256\" y1=\"0\" x2=\"0\" y2=\"256\"></line>
+        <line x1=\"128\" y1=\"0\" x2=\"128\" y2=\"256\"></line>
+        <line x1=\"0\" y1=\"128\" x2=\"256\" y2=\"128\"></line>
+      </g>
+      <g transform=\"scale(1, -1) translate(0, -900)\">
+        <style type=\"text/css\">
+          {' '.join(keyframes_list)}
+        </style>
+          {'\n'.join(path_list)} 
+          {'\n'.join(clip_list)}
+      </g>
+    </svg>
+    """
+
 
 
 if __name__ == '__main__':

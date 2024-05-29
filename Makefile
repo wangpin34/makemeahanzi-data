@@ -1,9 +1,14 @@
 .PHOENY: venv
 
 venv:
-	virtualenv venv
-	source venv/bin/activate
-	pip install
+	python3 -m venv .venv
+	. .venv/bin/activate
+
+use_venv:
+	. .venv/bin/activate
+
+install: venv
+	pip install -r requirements.txt
 
 deactivate:
 	deactivate
