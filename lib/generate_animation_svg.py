@@ -21,11 +21,18 @@ def print_keyframes(name, frames):
 
   return f"@keyframes {name} {{ \n {frames_str} \n }}"
 
+def print_animation(name, animation):
+  result = []
+  for key in animation:
+    result.append(f"{key}:{animation[key]}")
+  results = ';\n'.join(result) + ';'
+  return f"#{name} {{\n{results}\n}}"
+
 def print_path(stroke, fill="lightgray"):
   return f"<path d=\"{stroke}\" fill=\"{fill}\"></path>"
 
-def print_clip_path(clip):
-  return f"<path cli-path=\"url(\\#{clip['id']})\" d=\"{clip['stroke']}\" stroke-dasharray=\"{clip["stroke-dasharray"]}\" stroke-linecap=\"round\"/>"
+def print_clip_path(clip, index):
+  return f"<path id=\"animation-{index}\" clip-path=\"url(#{clip['id']})\" d=\"{clip['stroke']}\" stroke-dasharray=\"{clip["stroke-dasharray"]}\" stroke-linecap=\"round\" fill=\"none\"/>"
 
 def make_svg(clues):
   keyframes = clues['keyframes']
@@ -35,14 +42,27 @@ def make_svg(clues):
     keyframe = keyframes[key]
     keyframes_list.append(print_keyframes(key, keyframe))
 
+
+  animations = clues['animations']
+  animations_list = []
+  for key in animations:
+    animation = animations[key]
+    animations_list.append(print_animation(key, animation))
+
+
   path_list = []
   strokes = clues['strokes']
-  for stroke in clues['strokes']:
+  for stroke in strokes:
     path_list.append(print_path(stroke))
+
+  clip_path_path = []
+  for index, stroke in enumerate(strokes):
+    clip_path_path.append(f"<clipPath id=\"clip-{index}\"><path d=\"{stroke}\"></path></clipPath>")
+  
   
   clip_list = []
-  for clip in clues['clips']:
-    clip_list.append(print_clip_path(clip))
+  for index,clip in enumerate(clues['clips']):
+    clip_list.append(print_clip_path(clip, index))
 
   return f"""
     <svg version=\"1.1\" viewBox=\"0 0 1024 1024\" xmlns=\"http://www.w3.org/2000/svg\">
@@ -54,9 +74,14 @@ def make_svg(clues):
       </g>
       <g transform=\"scale(1, -1) translate(0, -900)\">
         <style type=\"text/css\">
-          {' '.join(keyframes_list)}
+          {'\n'.join(keyframes_list)}
+          
+          {'\n'.join(animations_list)}
         </style>
-          {'\n'.join(path_list)} 
+          {'\n'.join(path_list)}
+
+          {'\n'.join(clip_path_path)}
+
           {'\n'.join(clip_list)}
       </g>
     </svg>

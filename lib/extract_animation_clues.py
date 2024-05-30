@@ -6,6 +6,16 @@ import tinycss2
 from lxml import etree as ET
 
 
+def get_token_value(d):
+    if d.type == 'dimension':
+      value = str(d.value)
+      unit = d.unit
+      return f"{value}{unit}"
+    elif d.type == 'number':
+      return str(d.value)
+    else:
+      return d.value
+
 def extract_from_block(block):
   blockStr = tinycss2.serialize(block)
   declarations = filter(lambda d: d.type == 'declaration', tinycss2.parse_blocks_contents(blockStr))
@@ -13,7 +23,7 @@ def extract_from_block(block):
   filter_non_whitespace = lambda d: d.type != 'whitespace'
   values = {}
   for d in declarations:
-    values[d.name] = list(map(lambda c: c.value, filter(filter_non_whitespace, d.value)))[0]
+    values[d.name] = ' '.join(list(map(lambda c: get_token_value(c), filter(filter_non_whitespace, d.value))))
   return values
   
 

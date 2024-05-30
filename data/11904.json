@@ -3,47 +3,47 @@
     "keyframes0": {
       "from": {
         "stroke": "blue",
-        "stroke-dashoffset": 577.0,
-        "stroke-width": 128.0
+        "stroke-dashoffset": "577.0",
+        "stroke-width": "128.0"
       },
       "65.0%": {
         "animation-timing-function": "step-end",
         "stroke": "blue",
-        "stroke-dashoffset": 0.0,
-        "stroke-width": 128.0
+        "stroke-dashoffset": "0.0",
+        "stroke-width": "128.0"
       },
       "to": {
         "stroke": "black",
-        "stroke-width": 1024.0
+        "stroke-width": "1024.0"
       }
     },
     "keyframes1": {
       "from": {
         "stroke": "blue",
-        "stroke-dashoffset": 587.0,
-        "stroke-width": 128.0
+        "stroke-dashoffset": "587.0",
+        "stroke-width": "128.0"
       },
       "66.0%": {
         "animation-timing-function": "step-end",
         "stroke": "blue",
-        "stroke-dashoffset": 0.0,
-        "stroke-width": 128.0
+        "stroke-dashoffset": "0.0",
+        "stroke-width": "128.0"
       },
       "to": {
         "stroke": "black",
-        "stroke-width": 1024.0
+        "stroke-width": "1024.0"
       }
     }
   },
   "animations": {
     "animation-0": {
-      "animation": "keyframes0",
-      "animation-delay": 0.0,
+      "animation": "keyframes0 0.7195638020833334s both",
+      "animation-delay": "0.0s",
       "animation-timing-function": "linear"
     },
     "animation-1": {
-      "animation": "keyframes1",
-      "animation-delay": 0.7195638020833334,
+      "animation": "keyframes1 0.7277018229166666s both",
+      "animation-delay": "0.7195638020833334s",
       "animation-timing-function": "linear"
     }
   },
